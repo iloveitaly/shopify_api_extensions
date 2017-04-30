@@ -1,6 +1,6 @@
 require "spec_helper"
 
-RSpec.describe ShopifyApiExtensions do
+RSpec.describe ShopifyAPIExtensions do
   it "has a version number" do
     expect(ShopifyApiExtensions::VERSION).not_to be nil
   end

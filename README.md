@@ -1,8 +1,15 @@
-# ShopifyApiExtensions
+# Shopify API Extensions
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/shopify_api_extensions`. To experiment with that code, run `bin/console` for an interactive prompt.
+Adds some helpful functionality to the shopify API ruby gem:
 
-TODO: Delete this and the text above, and describe your gem
+* Backoff support for network errors and rate limiting
+* Pagination support ala Stripe's `auto_paging_each`
+* Some helpful convenience methods on various objects
+
+Links:
+
+* [Official Shopify API](https://rubygems.org/gems/shopify_api)
+* https://github.com/Shopify/shopify_api/pull/339
 
 ## Installation
 
@@ -12,17 +19,13 @@ Add this line to your application's Gemfile:
 gem 'shopify_api_extensions'
 ```
 
-And then execute:
-
-    $ bundle
-
-Or install it yourself as:
-
-    $ gem install shopify_api_extensions
-
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+ShopifyAPI::Product.auto_paging_each do |product|
+  puts "#{product.id}"
+end
+```
 
 ## Development
 
@@ -34,8 +37,6 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/iloveitaly/shopify_api_extensions.
 
-
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
