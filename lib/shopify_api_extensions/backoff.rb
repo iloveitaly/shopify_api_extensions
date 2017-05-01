@@ -1,4 +1,3 @@
-
 ShopifyAPI::Connection.class_eval do
   alias_method :shopify_request, :request
 
