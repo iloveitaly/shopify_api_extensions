@@ -25,6 +25,8 @@ gem 'shopify_api_extensions'
 ShopifyAPI::Product.auto_paging_each do |product|
   puts "#{product.id}"
 end
+
+ShopifyAPI::Order.list(limit: 100).map(&:number)
 ```
 
 ## Development
