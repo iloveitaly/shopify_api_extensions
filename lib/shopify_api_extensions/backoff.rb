@@ -2,11 +2,13 @@ ShopifyAPI::Connection.class_eval do
   alias_method :shopify_request, :request
 
   def request(*args)
-    count = 0
-    limit = 10
+    network_retry = 0
+    network_limit = 10
+
+    rate_limit_retry = 0
+    rate_limit_limit = 30
 
     begin
-      count += 1
       shopify_request(*args)
     rescue Exception => e
       exceptions_to_retry = [
@@ -16,7 +18,10 @@ ShopifyAPI::Connection.class_eval do
         Errno::EHOSTUNREACH,
         EOFError,
         Zlib::BufError,
-        SocketError
+        SocketError,
+        ActiveResource::SSLError,
+        # NOTE represents only 500x errors
+        ActiveResource::ServerError
       ]
 
       if !exceptions_to_retry.include?(e.class)
@@ -24,10 +29,27 @@ ShopifyAPI::Connection.class_eval do
       end
 
       # TODO look at code instead of static string? This is brittle
-      if count >= limit || (e.class == ActiveResource::ClientError && e.message != "Failed.  Response code = 429.  Response message = Too Many Requests.")
+      if e.class == ActiveResource::ClientError && e.message != "Failed.  Response code = 429.  Response message = Too Many Requests."
+        if rate_limit_retry > 0 && rate_limit_retry % 10 == 0
+          puts "Shopify Rate Limit Error Encountered"
+        end
+
+        if rate_limit_retry >= rate_limit_limit
+          raise
+        else
+          rate_limit_retry += 1
+          count(rate_limit_retry)
+          retry
+        end
+      elsif e.class == ActiveResource::ClientError
+        raise
+      end
+
+      if network_retry >= network_limit
         raise
       else
-        sleep(count)
+        network_retry += 1
+        sleep(network_retry)
         retry
       end
     end
