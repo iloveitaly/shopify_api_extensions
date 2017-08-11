@@ -28,8 +28,7 @@ ShopifyAPI::Connection.class_eval do
         raise
       end
 
-      # TODO look at code instead of static string? This is brittle
-      if e.class == ActiveResource::ClientError && e.message != "Failed.  Response code = 429.  Response message = Too Many Requests."
+      if e.class == ActiveResource::ClientError && e.message =~ /429/ && e.message =~ /Too Many Requests/
         if rate_limit_retry > 0 && rate_limit_retry % 10 == 0
           puts "Shopify Rate Limit Error Encountered"
         end
@@ -38,7 +37,7 @@ ShopifyAPI::Connection.class_eval do
           raise
         else
           rate_limit_retry += 1
-          count(rate_limit_retry)
+          sleep(rate_limit_retry)
           retry
         end
       elsif e.class == ActiveResource::ClientError
