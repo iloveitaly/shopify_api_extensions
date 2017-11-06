@@ -22,7 +22,7 @@ ShopifyAPI::Connection.class_eval do
         ActiveResource::SSLError,
         ActiveResource::TimeoutError,
         # NOTE represents only 500x errors
-        ActiveResource::ServerError,
+        ActiveResource::ServerError
       ]
 
       if !exceptions_to_retry.include?(e.class)
