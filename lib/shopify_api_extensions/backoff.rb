@@ -20,6 +20,7 @@ ShopifyAPI::Connection.class_eval do
         Zlib::BufError,
         SocketError,
         ActiveResource::SSLError,
+        ActiveResource::TimeoutError,
         # NOTE represents only 500x errors
         ActiveResource::ServerError
       ]
