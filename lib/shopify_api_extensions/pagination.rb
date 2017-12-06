@@ -9,10 +9,10 @@ ShopifyAPI::Base.class_eval do
 
     total_count = self.count(opts)
     pages = total_count/page_limit + 1
-    current_page = opts[:page] || 0
+    current_page = opts[:page] || 1
     records = []
 
-    while current_page != pages
+    while current_page <= pages
       self.list(opts.merge(page: current_page)).each do |record|
         records << record
 
